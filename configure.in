@@ -1,0 +1,48 @@
+AC_INIT(src/libkv.h)
+AC_CONFIG_AUX_DIR(ac)
+AM_INIT_AUTOMAKE(libkv, 0.0.1)
+AC_CONFIG_HEADER(config.h)
+
+
+CFLAGS="-g -Wall $CFLAGS"
+AC_SUBST(CFLAGS)
+
+AC_PROG_CC
+
+
+AC_ARG_WITH([tc],
+	AS_HELP_STRING([--with-tc@<:@=DIR@:>@],
+				   [Tokyo Cabinet]),
+	[tc_path="$withval"], [])
+if test "$tc_path" != ""; then
+	CXXFLAGS="$CXXFLAGS -I$tc_path/include"
+	CFLAGS="$CFLAGS -I$tc_path/include"
+	LDFLAGS="$LDFLAGS -L$tc_path/lib"
+fi
+
+
+use_tchdb="yes"
+AC_MSG_CHECKING([if tcbdb is enabled])
+AC_ARG_ENABLE(tcbdb,
+	AS_HELP_STRING([--disable-tcbdb],
+				   [use tcbdb instead of tchdb.]) )
+if test "$enable_tcbdb" != "no"; then
+	use_tchdb="no"
+	AC_CHECK_HEADERS(tchdb.h,,
+		AC_MSG_ERROR([Can't find tokyo cabinet header]))
+	AC_CHECK_LIB(tokyocabinet,tchdbget,,
+		AC_MSG_ERROR([Can't find tokyocabinet library]))
+fi
+AC_MSG_RESULT($enable_tcbdb)
+AM_CONDITIONAL(USE_TCHDB, test "$use_tchdb" = "yes")
+
+
+AC_PROG_LIBTOOL
+AM_PROG_AS
+AM_PROG_CC_C_O
+
+
+AC_OUTPUT([
+		   src/Makefile
+		   Makefile])
+
