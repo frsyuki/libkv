@@ -2,10 +2,12 @@ lib_LTLIBRARIES = libkv.la
 
 libkv_la_SOURCES = \
 		libkv/tchdb.c \
+		libkv/tcrdb.c \
 		libkv/libmemcached.c
 
 nobase_include_HEADERS = \
 		libkv/tchdb.h \
+		libkv/tcrdb.h \
 		libkv/libmemcached.h \
 		libkv.h
 

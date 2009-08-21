@@ -1,17 +1,21 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-typedef struct libkv_data {
-	char* data;
-	size_t size;
-} libkv_data;
+struct libkv_data;
+typedef struct libkv_data libkv_data;
 
 
 typedef struct libkv_mget {
 	libkv_data* (*kv_mget_add)(void*,
-			const char* key, size_t keylen);
+			const void* key, size_t keylen);
 
 	bool (*kv_mget_submit)(void*);
+
+	const void* (*kv_mget_getkey)(void*,
+			libkv_data* idx, size_t* result_keylen);
+
+	void* (*kv_mget_getval)(void*,
+			libkv_data* idx, size_t* result_vallen);
 
 	void (*kv_mget_free)(void*);
 
@@ -65,7 +69,7 @@ static inline libkv_mget* libkv_mget_new(libkv* x)
 }
 
 static inline libkv_data* libkv_mget_add(libkv_mget* mx,
-		const char* key, size_t keylen)
+		const void* key, size_t keylen)
 {
 	return mx->kv_mget_add(mx->data, key, keylen);
 }
@@ -73,6 +77,18 @@ static inline libkv_data* libkv_mget_add(libkv_mget* mx,
 static inline bool libkv_mget_submit(libkv_mget* mx)
 {
 	return mx->kv_mget_submit(mx->data);
+}
+
+static inline const void* libkv_mget_getkey(libkv_mget* mx,
+		libkv_data* idx, size_t* result_keylen)
+{
+	return mx->kv_mget_getkey(mx->data, idx, result_keylen);
+}
+
+static inline void* libkv_mget_getval(libkv_mget* mx,
+		libkv_data* idx, size_t* result_vallen)
+{
+	return mx->kv_mget_getval(mx->data, idx, result_vallen);
 }
 
 static inline void libkv_mget_free(libkv_mget* mx)
