@@ -1,4 +1,4 @@
-#include "libkv/libmemcached.h"
+#include "libkv/tcrdb.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -12,10 +12,10 @@ int main(void)
 	size_t len;
 	libkv kv;
 
-	ret = libkv_libmemcached_init(&kv);
+	ret = libkv_tcrdb_init(&kv);
 	check(ret, "init failed");
 
-	ret = libkv_libmemcached_add(&kv, "127.0.0.1", 11211);
+	ret = libkv_tcrdb_open(&kv, "127.0.0.1", 1978);
 	check(ret, "failed to add 127.0.0.1:11211");
 
 	ret = libkv_put(&kv, "k1", 2, "v1", 2);

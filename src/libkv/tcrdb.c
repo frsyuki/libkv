@@ -1,4 +1,6 @@
 #include "libkv/tcrdb.h"
+#include <string.h>
+#include <tcutil.h>
 
 static void* kv_get(TCRDB* c,
 		const void* key, size_t keylen,
@@ -31,41 +33,49 @@ static bool kv_close(TCRDB* c)
 }
 
 
-/*
-typedef struct kv_mget {
-	TCLIST* list;
-	TCMAP* map;
-};
-
-static libkv_data* kv_mget_add(TCMAP* mx,
-		const void* key, size_t keylen)
+static const void* kv_mget_next(TCMAP* m,
+		void* keybuf, size_t* keybuflen,
+		size_t* result_vallen)
 {
-	char* inlist;
-	char* kbuf = malloc( keylen + sizeof(libkv_data) );
-	if(kbuf == NULL) { return NULL; }
-
-	libkv_data* data = kbuf + keylen;
-	data->data = NULL;
-	data->size = 0;
-
-	if(!tclistunshift(mx->list, kbuf, keylen)) {
-		free(kbuf);
+	int keylen;
+	int vallen;
+	const void* val;
+	const void* key = tcmapiternext(m, &keylen);
+	if(keylen < *keybuflen) {
 		return NULL;
 	}
-	free(kbuf);
-
-	inlist = tclistval(mx->list, 0, &keylen);
-	if(!inlist) {
-		return NULL;
-	}
-
-	return (libkv_data*)(inlist + keylen);
+	memcpy(keybuf, key, keylen);
+	*keybuflen = keylen;
+	val = tcmapget(m, key, keylen, &vallen);
+	*result_vallen = vallen;
+	return val;
 }
-*/
 
-static libkv_mget* kv_mget_new(TCRDB* c)
+static void kv_mget_free(TCMAP* m)
 {
-	return NULL;
+	tcmapdel(m);
+}
+
+static bool kv_mget(TCRDB* c, libkv_mget_data* mx,
+		char** keys, size_t* keylens, size_t num)
+{
+	size_t i;
+	TCMAP* m = tcmapnew();
+	if(m == NULL) {
+		return false;
+	}
+	for(i=0; i < num; ++i) {
+		tcmapput(m, keys[i], keylens[i], "", 0);  // tcmapput doesn't fail!
+	}
+	if(!tcrdbget3(c, m)) {
+		tcmapdel(m);
+		return false;
+	}
+	tcmapiterinit(m);  // tcmapiterinit doesn't fail!
+	mx->kv_mget_next  = (void*)&kv_mget_next;
+	mx->kv_mget_free  = (void*)&kv_mget_free;
+	mx->data = (void*)m;
+	return true;
 }
 
 
@@ -75,12 +85,12 @@ bool libkv_tcrdb_init(libkv* x)
 	if(!c) {
 		return false;
 	}
-	x->kv_get      = (void*)&kv_get;
-	x->kv_put      = (void*)&kv_put;
-	x->kv_del      = (void*)&kv_del;
-	x->kv_mget_new = (void*)&kv_mget_new;
-	x->kv_close    = (void*)&kv_close;
-	x->data        = (void*)c;
+	x->kv_get   = (void*)&kv_get;
+	x->kv_put   = (void*)&kv_put;
+	x->kv_del   = (void*)&kv_del;
+	x->kv_mget  = (void*)&kv_mget;
+	x->kv_close = (void*)&kv_close;
+	x->data = (void*)c;
 	return true;
 }
 

@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 
-#define check(cond, ...) \
-	if(!(cond)) { fprintf(stderr, __VA_ARGS__); exit(1); }
+#define check(cond, fmt, ...) \
+	if(!(cond)) { fprintf(stderr, fmt "\n", ##__VA_ARGS__); exit(1); }
 
 int main(void)
 {

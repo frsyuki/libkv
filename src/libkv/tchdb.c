@@ -23,11 +23,6 @@ static bool kv_del(TCHDB* c,
 	return tchdbout(c, key, keylen);
 }
 
-static libkv_mget* kv_mget_new(TCHDB* c)
-{
-	return NULL;
-}
-
 static bool kv_close(TCHDB* c)
 {
 	bool r = tchdbclose(c);
@@ -46,12 +41,12 @@ bool libkv_tchdb_init(libkv* x)
 		tchdbdel(c);
 		return false;
 	}
-	x->kv_get      = (void*)&kv_get;
-	x->kv_put      = (void*)&kv_put;
-	x->kv_del      = (void*)&kv_del;
-	x->kv_mget_new = (void*)&kv_mget_new;
-	x->kv_close    = (void*)&kv_close;
-	x->data        = (void*)c;
+	x->kv_get   = (void*)&kv_get;
+	x->kv_put   = (void*)&kv_put;
+	x->kv_del   = (void*)&kv_del;
+	x->kv_mget  = NULL;
+	x->kv_close = (void*)&kv_close;
+	x->data     = (void*)c;
 	return true;
 }
 
