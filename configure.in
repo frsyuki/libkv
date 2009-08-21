@@ -20,14 +20,14 @@ if test "$tc_path" != ""; then
 	LDFLAGS="$LDFLAGS -L$tc_path/lib"
 fi
 
-
 use_tchdb="yes"
 AC_MSG_CHECKING([if tcbdb is enabled])
 AC_ARG_ENABLE(tcbdb,
 	AS_HELP_STRING([--disable-tcbdb],
 				   [use tcbdb instead of tchdb.]) )
-if test "$enable_tcbdb" != "no"; then
+if test "$enable_tcbdb" == "no"; then
 	use_tchdb="no"
+else
 	AC_CHECK_HEADERS(tchdb.h,,
 		AC_MSG_ERROR([Can't find tokyo cabinet header]))
 	AC_CHECK_LIB(tokyocabinet,tchdbget,,
@@ -35,6 +35,33 @@ if test "$enable_tcbdb" != "no"; then
 fi
 AC_MSG_RESULT($enable_tcbdb)
 AM_CONDITIONAL(USE_TCHDB, test "$use_tchdb" = "yes")
+
+
+AC_ARG_WITH([libmemcached],
+	AS_HELP_STRING([--with-libmemcached@<:@=DIR@:>@],
+				   [libmemcached]),
+	[libmemcached_path="$withval"], [])
+if test "$libmemcached_path" != ""; then
+	CXXFLAGS="$CXXFLAGS -I$libmemcached_path/include"
+	CFLAGS="$CFLAGS -I$libmemcached_path/include"
+	LDFLAGS="$LDFLAGS -L$libmemcached_path/lib"
+fi
+
+use_libmemcached="yes"
+AC_MSG_CHECKING([if tcbdb is enabled])
+AC_ARG_ENABLE(tcbdb,
+	AS_HELP_STRING([--disable-tcbdb],
+				   [use tcbdb instead of tchdb.]) )
+if test "$enable_libmemcached" == "no"; then
+	use_libmemcached="no"
+else
+	AC_CHECK_HEADERS(libmemcached/memcached.h,,
+		AC_MSG_ERROR([Can't find libmemcached header]))
+	AC_CHECK_LIB(memcached,memcached_create,,
+		AC_MSG_ERROR([Can't find libmemcached library]))
+fi
+AC_MSG_RESULT($enable_libmemcached)
+AM_CONDITIONAL(use_libmemcached, test "$use_libmemcached" = "yes")
 
 
 AC_PROG_LIBTOOL

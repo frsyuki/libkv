@@ -1,4 +1,4 @@
-#include "libkv/tchdb.h"
+#include "libkv/libmemcached.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -12,11 +12,11 @@ int main(void)
 	size_t len;
 	libkv kv;
 
-	ret = libkv_tchdb_init(&kv);
+	ret = libkv_libmemcached_init(&kv);
 	check(ret, "init failed");
 
-	ret = libkv_tchdb_open(&kv, "test_tchdb.tch", HDBOWRITER|HDBOCREAT);
-	check(ret, "failed to create test_tchdb.tch");
+	ret = libkv_libmemcached_add(&kv, "127.0.0.1", 11211);
+	check(ret, "failed to add 127.0.0.1:11211");
 
 	ret = libkv_put(&kv, "k1", 2, "v1", 2);
 	check(ret, "failed to put k1");

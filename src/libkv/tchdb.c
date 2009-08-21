@@ -1,6 +1,5 @@
 #include "libkv/tchdb.h"
 
-
 static void* kv_get(TCHDB* c,
 		const void* key, size_t keylen,
 		size_t* result_vallen)

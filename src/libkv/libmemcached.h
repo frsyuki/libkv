@@ -1,34 +1,17 @@
 #include <libmemcached/memcached.h>
 #include "libkv.h"
 
-/*
-class libkv_libmemcached : public libkv {
-public:
-	libkv_libmemcached();
+bool libkv_libmemcached_init(libkv*);
 
-	int get(
-			const void* key, size_t keylen,
-			void* valbuf, size_t valbuflen);
+bool libkv_libmemcached_add(libkv*,
+		const char* hostname, unsigned int port);
 
-	void* libkv_get_malloc(
-			const void* key, size_t keylen,
-			size_t* result_vallen);
+bool libkv_libmemcached_add_udp(libkv*,
+		const char* hostname, unsigned int port);
 
-	class multi : public libkv::multi {
-	public:
-		struct data {
-			char* data;
-			size_t size;
-		};
+bool libkv_libmemcached_add_unix_socket(libkv*,
+		const char* path);
 
-		data* add(const void* key, size_t keylen);
-		void submit();
-	};
-
-	multi* mget();
-};
-*/
-
-
-int libkv_libmemcached_init();
+bool libkv_libkemcached_add_list(libkv*,
+		const char* server_strings);
 
