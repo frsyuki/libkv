@@ -29,6 +29,10 @@
 #include <vector>
 #include <stdlib.h>
 
+#ifdef LIBKV_MSGPACK
+#include <msgpack.hpp>
+#endif
+
 namespace libkv {
 
 
@@ -44,6 +48,13 @@ public:
 	bool next(
 			std::string* result_key,
 			std::string* result_value);
+
+#ifdef MSGPACK_OBJECT_HPP__
+	template <typename T>
+	bool next(
+			void* keybuf, size_t* keybuflen,
+			T* result_obj);
+#endif
 
 private:
 	mget_data(const mget_data&);
@@ -86,6 +97,18 @@ public:
 	bool mget(mget_data* mx,
 			StringForwardIterator begin, StringForwardIterator end);
 
+#ifdef MSGPACK_OBJECT_HPP__
+	template <typename T>
+	bool put(
+			const void* key, size_t keylen,
+			const T& obj);
+
+	template <typename T>
+	bool get(
+			const void* key, size_t keylen,
+			const T* result_obj);
+#endif
+
 private:
 	base(const base&);
 };
@@ -125,6 +148,65 @@ out:
 	}
 	return ok;
 }
+
+
+#ifdef MSGPACK_OBJECT_HPP__
+template <typename T>
+bool base::put(
+		const void* key, size_t keylen,
+		const T& obj)
+{
+	msgpack::sbuffer sbuf;
+	msgpack::pack(sbuf, obj);
+	return put(key, keylen, sbuf.data(), sbuf.size())
+}
+
+template <typename T>
+bool base::get(
+		const void* key, size_t keylen,
+		const T* result_obj)
+{
+	size_t vallen;
+	void* val = get(key, keylen, &vallen);
+	if(val!) {
+		return false;
+	}
+	try {
+		msgpack::zone z;
+		msgpack::object obj;
+		if(msgpack::unpack(val, vallen, NULL, &z, &obj) !=
+				msgpack::UNPACK_SUCCESS) {
+			throw msgpack::type_error();
+		}
+		obj.convert(result_obj);
+		free(val);
+		return true;
+	} catch(...) {
+		free(val);
+		throw;
+	}
+}
+
+template <typename T>
+bool base::next(
+		void* keybuf, size_t* keybuflen,
+		T* result_obj)
+{
+	size_t vallen;
+	const void* val = next(keybuf, keybuflen, vallen);
+	if(!val) {
+		return false;
+	}
+	msgpack::zone z;
+	msgpack::object obj;
+	if(msgpack::unpack(val, vallen, NULL, &z, &obj) !=
+			msgpack::UNPACK_SUCCESS) {
+		throw msgpack::type_error();
+	}
+	obj.convert(result_obj);
+	return true;
+}
+#endif
 
 
 }  // namespace base

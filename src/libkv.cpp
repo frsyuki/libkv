@@ -52,7 +52,10 @@ bool base::get(
 {
 	size_t vallen;
 	void* val = get(key.data(), key.size(), &vallen);
-	if(val) try {
+	if(!val) {
+		return false;
+	}
+	try {
 		result_value->assign((char*)val, vallen);
 		free(val);
 		return true;
@@ -60,7 +63,6 @@ bool base::get(
 		free(val);
 		throw;
 	}
-	return true;
 }
 
 bool base::put(
