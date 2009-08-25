@@ -29,6 +29,20 @@ Configure and install in the usual way:
 **--disable-libmemcached** Disable libmemcached support
 
 
+## Usage
+
+### C API
+Include libkv/IMPL.h header and link libkv library.
+IMPL is one of libmemcached, tcadb, tcbdb, tchdb or tcrdb.
+
+### C++ API
+Include libkv/IMPL.hpp header and link libkvpp library.
+IMPL is one of libmemcached, tcadb, tcbdb, tchdb or tcrdb.
+
+To use put_obj and get_obj APIs, include msgpack.hpp header before including
+libkv header or add -DLIBKV_MSGPACK flag to CXXFLAGS.
+
+
 ## License
 
     Copyright (c) 2009 FURUHASHI Sadayuki
@@ -50,4 +64,6 @@ Configure and install in the usual way:
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
     THE SOFTWARE.
+
+See also NOTICE file.
 
