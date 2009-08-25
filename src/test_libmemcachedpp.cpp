@@ -8,53 +8,44 @@
 int main(void)
 {
 	bool ret;
-	void* data;
-	size_t len;
+	std::string key;
+	std::string val;
 
 	libkv::libmemcached kv;
 
 	ret = kv.add("127.0.0.1", 11211);
 	check(ret, "failed to add 127.0.0.1:11211");
 
-	ret = kv.put("k1", 2, "v1", 2);
+	ret = kv.put("k1", "v1");
 	check(ret, "failed to put k1");
 
-	data = kv.get("k1", 2, &len);
+	ret = kv.get("k1", &val);
 	check(ret, "failed to get k1");
 
-	check(len == 2, "value size of k1 mismatched");
-	check(memcmp(data,"v1",2) == 0, "value of k1 mismatched");
+	check(val.size() == 2, "value size of k1 mismatched");
+	check(val == "v1", "value of k1 mismatched");
 
-	free(data);
-
-	ret = kv.del("k1", 2);
+	ret = kv.del("k1");
 	check(ret, "failed to del k1");
 
-	ret = kv.del("k1", 2);
+	ret = kv.del("k1");
 	check(!ret, "unexpectedly success to del k1");
 
-	int i;
-	char* keys[] = { "k1", "k2", "k3" };
-	size_t keylens[] = { 2, 2, 2 };
-	for(i=0; i < 3; ++i) {
-		kv.put(keys[i], keylens[i], "val", 3);
-	}
+	std::vector<std::string> keys;
+	keys.push_back("k1");
+	keys.push_back("k2");
+	keys.push_back("k3");
 
 	libkv::mget_data mdata;
-	ret = kv.mget(&mdata, keys, keylens, 3);
+	ret = kv.mget(&mdata, keys.begin(), keys.end());
 	check(ret, "failed to mget");
 
-	char keybuf[1024];
-	size_t keybuflen;
-	const void* cdata;
-
-	for(i=0; i < 3; ++i) {
-		keybuflen = sizeof(keybuf);
-		cdata = mdata.next(keybuf, &keybuflen, &len);
-		check(cdata != NULL, "failed to mget next");
-		check(len == 3, "invalid mget value size %lu", len);
-		check(keybuflen == 2, "invalid mget key size %lu", keybuflen);
-		check(memcmp(cdata, "val", 3) == 0, "invalid mget value");
+	for(int i=0; i < 3; ++i) {
+		ret = mdata.next(&key, &val);
+		check(ret, "failed to mget next");
+		check(val.size() == 3, "invalid mget value size %lu", val.size());
+		check(key.size() == 2, "invalid mget key size %lu", key.size());
+		check(val.substr(0,3) == "val", "invalid mget key size %lu", key.size());
 	}
 
 	return 0;

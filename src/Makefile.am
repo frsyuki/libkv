@@ -49,7 +49,7 @@ endif
 
 
 libkvpp_la_SOURCES = libkv.cpp
-libkvpp_la_LIBADD = -L. -lkv
+libkvpp_la_LIBADD = libkv.la
 
 
 nobase_include_HEADERS = \

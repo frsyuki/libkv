@@ -92,6 +92,22 @@ const void* mget_data::next(
 	return libkv_mget_next(this, keybuf, keybuflen, result_vallen);
 }
 
+bool mget_data::next(
+		std::string* result_key,
+		std::string* result_value)
+{
+	char kbuf[1024];
+	size_t kbuflen = sizeof(kbuf);
+	size_t vallen;
+	const void* val = next(kbuf, &kbuflen, &vallen);
+	if(val) {
+		result_value->assign((char*)val, vallen);
+		result_key->assign(kbuf, kbuflen);
+		return true;
+	}
+	return false;
+}
+
 
 }  // namespace base
 
