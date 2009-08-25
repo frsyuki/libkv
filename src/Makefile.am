@@ -12,7 +12,7 @@ test_tchdb_SOURCES = test_tchdb.c
 test_tchdb_LDADD  = -ltokyocabinet -L. -lkv
 
 test_tchdbpp_SOURCES = test_tchdbpp.cpp
-test_tchdbpp_LDADD  = -ltokyocabinet -L. -lkvpp -lkv
+test_tchdbpp_LDADD  = -ltokyocabinet -L. -lkvpp
 endif
 
 
@@ -24,7 +24,7 @@ test_tcrdb_SOURCES = test_tcrdb.c
 test_tcrdb_LDADD  = -ltokyotyrant -L. -lkv
 
 test_tcrdbpp_SOURCES = test_tcrdbpp.cpp
-test_tcrdbpp_LDADD  = -ltokyotyrant -L. -lkvpp -lkv
+test_tcrdbpp_LDADD  = -ltokyotyrant -L. -lkvpp
 endif
 
 
@@ -36,11 +36,13 @@ test_libmemcached_SOURCES = test_libmemcached.c
 test_libmemcached_LDADD  = -lmemcached -L. -lkv
 
 test_libmemcachedpp_SOURCES = test_libmemcachedpp.cpp
-test_libmemcachedpp_LDADD  = -lmemcached -L. -lkvpp -lkv
+test_libmemcachedpp_LDADD  = -lmemcached -L. -lkvpp
 endif
 
 
 libkvpp_la_SOURCES = libkv.cpp
+libkvpp_la_LIBADD = -L. -lkv
+
 
 nobase_include_HEADERS = \
 		libkv/tchdb.h \
