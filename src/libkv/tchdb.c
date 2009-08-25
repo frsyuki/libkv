@@ -31,7 +31,7 @@ static bool kv_close(TCHDB* c)
 }
 
 
-bool libkv_tchdb_init(libkv* x)
+bool libkv_tchdb_init(libkv_t* x)
 {
 	TCHDB* c = tchdbnew();
 	if(!c) {
@@ -50,7 +50,7 @@ bool libkv_tchdb_init(libkv* x)
 	return true;
 }
 
-bool libkv_tchdb_open(libkv* x,
+bool libkv_tchdb_open(libkv_t* x,
 		const char* path, int mode)
 {
 	TCHDB* c = x->data;

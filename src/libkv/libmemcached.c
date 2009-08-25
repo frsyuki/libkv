@@ -84,7 +84,7 @@ static bool kv_mget(memcached_st* c, libkv_mget_data* mx,
 }
 
 
-bool libkv_libmemcached_init(libkv* x)
+bool libkv_libmemcached_init(libkv_t* x)
 {
 	memcached_st* c = memcached_create(NULL);
 	if(!c) {
@@ -99,28 +99,28 @@ bool libkv_libmemcached_init(libkv* x)
 	return true;
 }
 
-bool libkv_libmemcached_add(libkv* x,
+bool libkv_libmemcached_add(libkv_t* x,
 		const char* hostname, unsigned int port)
 {
 	return memcached_server_add(x->data, hostname, port)
 		== MEMCACHED_SUCCESS;
 }
 
-bool libkv_libmemcached_add_udp(libkv* x,
+bool libkv_libmemcached_add_udp(libkv_t* x,
 		const char* hostname, unsigned int port)
 {
 	return memcached_server_add_udp(x->data, hostname, port)
 		== MEMCACHED_SUCCESS;
 }
 
-bool libkv_libmemcached_add_unix_socket(libkv* x,
+bool libkv_libmemcached_add_unix_socket(libkv_t* x,
 		const char* path)
 {
 	return memcached_server_add_unix_socket(x->data, path)
 		== MEMCACHED_SUCCESS;
 }
 
-bool libkv_libkemcached_add_list(libkv* x,
+bool libkv_libmemcached_add_list(libkv_t* x,
 		const char* server_strings)
 {
 	memcached_return ret;

@@ -79,7 +79,7 @@ static bool kv_mget(TCRDB* c, libkv_mget_data* mx,
 }
 
 
-bool libkv_tcrdb_init(libkv* x)
+bool libkv_tcrdb_init(libkv_t* x)
 {
 	TCRDB* c = tcrdbnew();
 	if(!c) {
@@ -94,10 +94,10 @@ bool libkv_tcrdb_init(libkv* x)
 	return true;
 }
 
-bool libkv_tcrdb_open(libkv* x,
-		const char* path, int mode)
+bool libkv_tcrdb_open(libkv_t* x,
+		const char* host, int port)
 {
 	TCRDB* c = x->data;
-	return tcrdbopen(c, path, mode);
+	return tcrdbopen(c, host, port);
 }
 

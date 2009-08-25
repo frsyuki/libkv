@@ -10,7 +10,7 @@ int main(void)
 	bool ret;
 	void* data;
 	size_t len;
-	libkv kv;
+	libkv_t kv;
 
 	ret = libkv_tcrdb_init(&kv);
 	check(ret, "init failed");
@@ -56,6 +56,8 @@ int main(void)
 		check(keybuflen == 2, "invalid mget key size %lu", keybuflen);
 		check(memcmp(cdata, "val", 3) == 0, "invalid mget value");
 	}
+
+	libkv_mget_free(mdata);
 
 	ret = libkv_close(&kv);
 	check(ret, "failed to close");

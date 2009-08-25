@@ -1,6 +1,13 @@
+#ifndef LIBKV_H__
+#define LIBKV_H__
+
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdlib.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 typedef struct libkv_mget_data {
@@ -14,7 +21,7 @@ typedef struct libkv_mget_data {
 } libkv_mget_data;
 
 
-typedef struct libkv {
+typedef struct libkv_t {
 	void* (*kv_get)(void*,
 		const void* key, size_t keylen,
 		size_t* result_vallen);
@@ -32,33 +39,33 @@ typedef struct libkv {
 	bool (*kv_close)(void*);
 
 	void* data;
-} libkv;
+} libkv_t;
 
 
-static inline void* libkv_get(libkv* x,
+static inline void* libkv_get(libkv_t* x,
 		const void* key, size_t keylen,
 		size_t* result_vallen)
 {
 	return x->kv_get(x->data, key, keylen, result_vallen);
 }
 
-static inline bool libkv_del(libkv* x,
+static inline bool libkv_del(libkv_t* x,
 		const void* key, size_t keylen)
 {
 	return x->kv_del(x->data, key, keylen);
 }
 
-static inline bool libkv_put(libkv* x,
+static inline bool libkv_put(libkv_t* x,
 		const void* key, size_t keylen,
 		const void* val, size_t vallen)
 {
 	return x->kv_put(x->data, key, keylen, val, vallen);
 }
 
-static inline libkv_mget_data* libkv_mget(libkv* x,
+static inline libkv_mget_data* libkv_mget(libkv_t* x,
 		char** keys, size_t* keylens, size_t num)
 {
-	libkv_mget_data* mx = malloc(sizeof(libkv_mget_data));
+	libkv_mget_data* mx = (libkv_mget_data*)malloc(sizeof(libkv_mget_data));
 	if(!x->kv_mget(x->data, mx, keys, keylens, num)) {
 		free(mx);
 		return NULL;
@@ -79,8 +86,15 @@ static inline void libkv_mget_free(libkv_mget_data* mx)
 	free(mx);
 }
 
-static inline bool libkv_close(libkv* mx)
+static inline bool libkv_close(libkv_t* mx)
 {
 	return mx->kv_close(mx->data);
 }
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* libkv.h */
 

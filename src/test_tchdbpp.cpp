@@ -1,4 +1,4 @@
-#include "libkv/tchdb.h"
+#include "libkv/tchdb.hpp"
 #include <string.h>
 #include <stdio.h>
 
@@ -10,32 +10,24 @@ int main(void)
 	bool ret;
 	void* data;
 	size_t len;
-	libkv_t kv;
 
-	ret = libkv_tchdb_init(&kv);
-	check(ret, "init failed");
+	libkv::tchdb kv("test_tchdb.tch", HDBOWRITER|HDBOCREAT);
 
-	ret = libkv_tchdb_open(&kv, "test_tchdb.tch", HDBOWRITER|HDBOCREAT);
-	check(ret, "failed to create test_tchdb.tch");
-
-	ret = libkv_put(&kv, "k1", 2, "v1", 2);
+	ret = kv.put("k1", 2, "v1", 2);
 	check(ret, "failed to put k1");
 
-	data = libkv_get(&kv, "k1", 2, &len);
+	data = kv.get("k1", 2, &len);
 	check(ret, "failed to get k1");
 
 	free(data);
 
 	check(memcmp(data,"v1",2) == 0, "value of k1 mismatched");
 
-	ret = libkv_del(&kv, "k1", 2);
+	ret = kv.del("k1", 2);
 	check(ret, "failed to del k1");
 
-	ret = libkv_del(&kv, "k1", 2);
+	ret = kv.del("k1", 2);
 	check(!ret, "unexpectedly success to del k1");
-
-	ret = libkv_close(&kv);
-	check(ret, "failed to close");
 
 	return 0;
 }
