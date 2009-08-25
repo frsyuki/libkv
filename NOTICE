@@ -1,0 +1,5 @@
+Serializate/Deserializate routine is provided by MessagePack developed by
+FURUHASHI Sadayuki, which is open source software licensed under Apache License,
+Version 2.0. The original software and related information is available at
+http://msgpack.sourceforge.jp/.
+
