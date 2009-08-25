@@ -83,6 +83,7 @@ bool base::mget(mget_data* mx,
 		if(mem == NULL) {
 			goto out;
 		}
+		memcpy(mem, data, size);
 		try {
 			keylens.push_back(size);
 			keys.push_back(mem);

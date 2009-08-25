@@ -36,6 +36,10 @@ int main(void)
 	keys.push_back("k2");
 	keys.push_back("k3");
 
+	for(int i=0; i < 3; ++i) {
+		kv.put(keys[i], "val");
+	}
+
 	libkv::mget_data mdata;
 	ret = kv.mget(&mdata, keys.begin(), keys.end());
 	check(ret, "failed to mget");
@@ -45,7 +49,7 @@ int main(void)
 		check(ret, "failed to mget next");
 		check(val.size() == 3, "invalid mget value size %lu", val.size());
 		check(key.size() == 2, "invalid mget key size %lu", key.size());
-		check(val.substr(0,3) == "val", "invalid mget key size %lu", key.size());
+		check(val == "val", "invalid mget key size %lu", key.size());
 	}
 
 	return 0;
