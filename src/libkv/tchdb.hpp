@@ -10,11 +10,16 @@ namespace libkv {
 
 class tchdb : public base {
 public:
-	tchdb(const char* path, int mode)
+	tchdb()
 	{
-		if(!libkv_tchdb_open((libkv_t*)this, path, mode)) {
-			throw std::runtime_error("failed to open libkv::tchdb");
+		if(!libkv_tchdb_init(this)) {
+			throw std::bad_alloc();
 		}
+	}
+
+	bool open(const char* path, int mode)
+	{
+		return libkv_tchdb_open(this, path, mode);
 	}
 };
 

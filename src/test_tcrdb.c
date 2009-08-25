@@ -16,17 +16,18 @@ int main(void)
 	check(ret, "init failed");
 
 	ret = libkv_tcrdb_open(&kv, "127.0.0.1", 1978);
-	check(ret, "failed to add 127.0.0.1:11211");
+	check(ret, "failed to open 127.0.0.1:1978");
 
 	ret = libkv_put(&kv, "k1", 2, "v1", 2);
 	check(ret, "failed to put k1");
 
 	data = libkv_get(&kv, "k1", 2, &len);
-	check(ret, "failed to get k1");
+	check(data, "failed to get k1");
+
+	check(len == 2, "value size of k1 mismatched");
+	check(memcmp(data,"v1",2) == 0, "value of k1 mismatched");
 
 	free(data);
-
-	check(memcmp(data,"v1",2) == 0, "value of k1 mismatched");
 
 	ret = libkv_del(&kv, "k1", 2);
 	check(ret, "failed to del k1");

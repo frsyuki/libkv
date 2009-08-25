@@ -7,7 +7,7 @@
 namespace libkv {
 
 
-class mget_data : protected libkv_mget_data {
+class mget_data : public libkv_mget_data {
 public:
 	mget_data();
 	~mget_data();
@@ -15,11 +15,13 @@ public:
 	const void* next(
 			void* keybuf, size_t* keybuflen,
 			size_t* result_vallen);
+
+private:
+	mget_data(const mget_data&);
 };
 
 
 class base : protected libkv_t {
-public:
 protected:
 	base();
 

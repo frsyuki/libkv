@@ -10,11 +10,16 @@ namespace libkv {
 
 class tcrdb : public base {
 public:
-	tcrdb(const char* host, int port)
+	tcrdb()
 	{
-		if(!libkv_tcrdb_open((libkv_t*)this, host, port)) {
-			throw std::runtime_error("failed to open libkv::tcrdb");
+		if(!libkv_tcrdb_init(this)) {
+			throw std::bad_alloc();
 		}
+	}
+
+	bool open(const char* host, int port)
+	{
+		return libkv_tcrdb_open(this, host, port);
 	}
 };
 

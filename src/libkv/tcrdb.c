@@ -41,7 +41,7 @@ static const void* kv_mget_next(TCMAP* m,
 	int vallen;
 	const void* val;
 	const void* key = tcmapiternext(m, &keylen);
-	if(keylen < *keybuflen) {
+	if(*keybuflen < keylen) {
 		return NULL;
 	}
 	memcpy(keybuf, key, keylen);

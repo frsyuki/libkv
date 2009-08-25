@@ -3,18 +3,23 @@
 namespace libkv {
 
 
-base::base() { }
+base::base()
+{
+	memset(this, 0, sizeof(base));
+}
 
 base::~base()
 {
-	(*kv_close)(this);
+	if(kv_close) {
+		(*kv_close)(this->data);
+	}
 }
 
 void* base::get(
 	const void* key, size_t keylen,
 	size_t* result_vallen)
 {
-	return (*kv_get)(this, key, keylen, result_vallen);
+	return libkv_get(this, key, keylen, result_vallen);
 }
 
 
@@ -39,7 +44,7 @@ bool base::put(
 		const void* key, size_t keylen,
 		const void* val, size_t vallen)
 {
-	return (*kv_put)(this, key, keylen, val, vallen);
+	return libkv_put(this, key, keylen, val, vallen);
 }
 
 bool base::put(
@@ -52,7 +57,7 @@ bool base::put(
 bool base::del(
 		const void* key, size_t keylen)
 {
-	return (*kv_del)(this, key, keylen);
+	return libkv_del(this, key, keylen);
 }
 
 bool base::del(
@@ -64,7 +69,7 @@ bool base::del(
 bool base::mget(mget_data* mx,
 		char** keys, size_t* keylens, size_t num)
 {
-	return (*kv_mget)(this, (libkv_mget_data*)mx, keys, keylens, num);
+	return (*kv_mget)(this->data, mx, keys, keylens, num);
 }
 
 
@@ -76,7 +81,7 @@ mget_data::mget_data()
 mget_data::~mget_data()
 {
 	if(kv_mget_free) {
-		(*kv_mget_free)(this);
+		(*kv_mget_free)(this->data);
 	}
 }
 
@@ -84,7 +89,7 @@ const void* mget_data::next(
 		void* keybuf, size_t* keybuflen,
 		size_t* result_vallen)
 {
-	return (*kv_mget_next)(this, keybuf, keybuflen, result_vallen);
+	return libkv_mget_next(this, keybuf, keybuflen, result_vallen);
 }
 
 
