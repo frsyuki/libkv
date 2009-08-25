@@ -66,7 +66,7 @@ static bool kv_mget(TCHDB* c, libkv_mget_data* mx,
 	}
 	for(i=0; i < num; ++i) {
 		int vallen = 0;
-		void* val = tchdb(c, keys[i], keylens[i], &vallen);
+		void* val = tchdbget(c, keys[i], keylens[i], &vallen);
 		if(val) {
 			tcmapput(m, keys[i], keylens[i], val, vallen);  // tcmapput doesn't fail!
 			free(val);
