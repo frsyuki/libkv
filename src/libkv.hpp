@@ -51,7 +51,7 @@ public:
 
 #ifdef MSGPACK_OBJECT_HPP__
 	template <typename T>
-	bool next(
+	bool next_obj(
 			void* keybuf, size_t* keybuflen,
 			T* result_obj);
 #endif
@@ -99,14 +99,24 @@ public:
 
 #ifdef MSGPACK_OBJECT_HPP__
 	template <typename T>
-	bool put(
+	bool put_obj(
 			const void* key, size_t keylen,
 			const T& obj);
 
 	template <typename T>
-	bool get(
+	bool put_obj(
+			const std::string& key,
+			const T& obj);
+
+	template <typename T>
+	bool get_obj(
 			const void* key, size_t keylen,
-			const T* result_obj);
+			T* result_obj);
+
+	template <typename T>
+	bool get_obj(
+			const std::string& key,
+			T* result_obj);
 #endif
 
 private:
@@ -152,29 +162,37 @@ out:
 
 #ifdef MSGPACK_OBJECT_HPP__
 template <typename T>
-bool base::put(
+bool base::put_obj(
 		const void* key, size_t keylen,
 		const T& obj)
 {
 	msgpack::sbuffer sbuf;
 	msgpack::pack(sbuf, obj);
-	return put(key, keylen, sbuf.data(), sbuf.size())
+	return put(key, keylen, sbuf.data(), sbuf.size());
 }
 
 template <typename T>
-bool base::get(
+bool base::put_obj(
+		const std::string& key,
+		const T& obj)
+{
+	return put_obj<T>(key.data(), key.size(), obj);
+}
+
+template <typename T>
+bool base::get_obj(
 		const void* key, size_t keylen,
-		const T* result_obj)
+		T* result_obj)
 {
 	size_t vallen;
 	void* val = get(key, keylen, &vallen);
-	if(val!) {
+	if(!val) {
 		return false;
 	}
 	try {
 		msgpack::zone z;
 		msgpack::object obj;
-		if(msgpack::unpack(val, vallen, NULL, &z, &obj) !=
+		if(msgpack::unpack((const char*)val, vallen, NULL, &z, &obj) !=
 				msgpack::UNPACK_SUCCESS) {
 			throw msgpack::type_error();
 		}
@@ -188,7 +206,15 @@ bool base::get(
 }
 
 template <typename T>
-bool base::next(
+bool base::get_obj(
+		const std::string& key,
+		T* result_obj)
+{
+	return get_obj<T>(key.data(), key.size(), result_obj);
+}
+
+template <typename T>
+bool mget_data::next_obj(
 		void* keybuf, size_t* keybuflen,
 		T* result_obj)
 {

@@ -48,6 +48,11 @@ test_libmemcachedpp_LDADD  = -lmemcached -L. -lkvpp
 endif
 
 
+check_PROGRAMS += test_msgpack
+test_msgpack_SOURCES = test_msgpack.c
+test_msgpack_LDADD  = -ltokyocabinet -lmsgpack -L. -lkvpp
+
+
 libkvpp_la_SOURCES = libkv.cpp
 libkvpp_la_LIBADD = libkv.la
 
