@@ -27,11 +27,11 @@ if test "$tc_path" != ""; then
 fi
 
 use_tchdb="yes"
-AC_MSG_CHECKING([if tcbdb is enabled])
-AC_ARG_ENABLE(tcbdb,
-	AS_HELP_STRING([--disable-tcbdb],
-				   [use tcbdb instead of tchdb.]) )
-if test "$enable_tcbdb" == "no"; then
+AC_MSG_CHECKING([if tchdb is enabled])
+AC_ARG_ENABLE(tchdb,
+	AS_HELP_STRING([--disable-tchdb],
+				   [disble tchdb support]) )
+if test "$enable_tchdb" == "no"; then
 	use_tchdb="no"
 else
 	AC_CHECK_HEADERS(tchdb.h,,
@@ -39,7 +39,7 @@ else
 	AC_CHECK_LIB(tokyocabinet,tchdbget,,
 		AC_MSG_ERROR([Can't find tokyocabinet library]))
 fi
-AC_MSG_RESULT($enable_tcbdb)
+AC_MSG_RESULT($enable_tchdb)
 AM_CONDITIONAL(USE_TCHDB, test "$use_tchdb" = "yes")
 
 
@@ -57,11 +57,11 @@ if test "$tc_path" != ""; then
 fi
 
 use_tcrdb="yes"
-AC_MSG_CHECKING([if tcbdb is enabled])
-AC_ARG_ENABLE(tcbdb,
-	AS_HELP_STRING([--disable-tcbdb],
-				   [use tcbdb instead of tcrdb.]) )
-if test "$enable_tcbdb" == "no"; then
+AC_MSG_CHECKING([if tcrdb is enabled])
+AC_ARG_ENABLE(tcrdb,
+	AS_HELP_STRING([--disable-tcrdb],
+				   [disable tcrdb support]) )
+if test "$enable_tcrdb" == "no"; then
 	use_tcrdb="no"
 else
 	AC_CHECK_HEADERS(tcrdb.h,,
@@ -69,8 +69,8 @@ else
 	AC_CHECK_LIB(tokyotyrant,tcrdbget,,
 		AC_MSG_ERROR([Can't find tokyotyrant library]))
 fi
-AC_MSG_RESULT($enable_tcbdb)
-AM_CONDITIONAL(USE_tcrdb, test "$use_tcrdb" = "yes")
+AC_MSG_RESULT($enable_tcrdb)
+AM_CONDITIONAL(USE_TCRDB, test "$use_tcrdb" = "yes")
 
 
 ####
@@ -87,10 +87,10 @@ if test "$libmemcached_path" != ""; then
 fi
 
 use_libmemcached="yes"
-AC_MSG_CHECKING([if tcbdb is enabled])
-AC_ARG_ENABLE(tcbdb,
-	AS_HELP_STRING([--disable-tcbdb],
-				   [use tcbdb instead of tchdb.]) )
+AC_MSG_CHECKING([if libmemcached is enabled])
+AC_ARG_ENABLE(libmemcached,
+	AS_HELP_STRING([--disable-libmemcached],
+				   [disable libmemcached support]) )
 if test "$enable_libmemcached" == "no"; then
 	use_libmemcached="no"
 else
@@ -100,7 +100,7 @@ else
 		AC_MSG_ERROR([Can't find libmemcached library]))
 fi
 AC_MSG_RESULT($enable_libmemcached)
-AM_CONDITIONAL(use_libmemcached, test "$use_libmemcached" = "yes")
+AM_CONDITIONAL(USE_LIBMEMCACHED, test "$use_libmemcached" = "yes")
 
 
 AC_PROG_LIBTOOL
