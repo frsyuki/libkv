@@ -18,7 +18,7 @@ AC_PROG_CXX
 ##
 AC_ARG_WITH([tc],
 	AS_HELP_STRING([--with-tc@<:@=DIR@:>@],
-				   [Tokyo Cabinet]),
+				   [the install directory of Tokyo Cabinet]),
 	[tc_path="$withval"], [])
 if test "$tc_path" != ""; then
 	CXXFLAGS="$CXXFLAGS -I$tc_path/include"
@@ -26,21 +26,21 @@ if test "$tc_path" != ""; then
 	LDFLAGS="$LDFLAGS -L$tc_path/lib"
 fi
 
-use_tchdb="yes"
-AC_MSG_CHECKING([if tchdb is enabled])
-AC_ARG_ENABLE(tchdb,
-	AS_HELP_STRING([--disable-tchdb],
-				   [disble tchdb support]) )
-if test "$enable_tchdb" == "no"; then
-	use_tchdb="no"
+use_tc="yes"
+AC_MSG_CHECKING([if Tokyo Cabinet is enabled])
+AC_ARG_ENABLE(tc,
+	AS_HELP_STRING([--disable-tc],
+				   [disble Tokyo Cabinet support]) )
+if test "$enable_tc" == "no"; then
+	use_tc="no"
 else
-	AC_CHECK_HEADERS(tchdb.h,,
+	AC_CHECK_HEADERS(tcadb.h,,
 		AC_MSG_ERROR([Can't find tokyo cabinet header]))
-	AC_CHECK_LIB(tokyocabinet,tchdbget,,
+	AC_CHECK_LIB(tokyocabinet,tcadbget,,
 		AC_MSG_ERROR([Can't find tokyocabinet library]))
 fi
-AC_MSG_RESULT($enable_tchdb)
-AM_CONDITIONAL(USE_TCHDB, test "$use_tchdb" = "yes")
+AC_MSG_RESULT($enable_tc)
+AM_CONDITIONAL(USE_TC, test "$use_tc" = "yes")
 
 
 ####
@@ -48,7 +48,7 @@ AM_CONDITIONAL(USE_TCHDB, test "$use_tchdb" = "yes")
 ##
 AC_ARG_WITH([tt],
 	AS_HELP_STRING([--with-tt@<:@=DIR@:>@],
-				   [Tokyo Tyrant]),
+				   [the install directory of Tokyo Tyrant]),
 	[tc_path="$withval"], [])
 if test "$tc_path" != ""; then
 	CXXFLAGS="$CXXFLAGS -I$tc_path/include"
@@ -56,21 +56,21 @@ if test "$tc_path" != ""; then
 	LDFLAGS="$LDFLAGS -L$tc_path/lib"
 fi
 
-use_tcrdb="yes"
-AC_MSG_CHECKING([if tcrdb is enabled])
-AC_ARG_ENABLE(tcrdb,
-	AS_HELP_STRING([--disable-tcrdb],
-				   [disable tcrdb support]) )
-if test "$enable_tcrdb" == "no"; then
-	use_tcrdb="no"
+use_tt="yes"
+AC_MSG_CHECKING([if Tokyo Tyrant is enabled])
+AC_ARG_ENABLE(tt,
+	AS_HELP_STRING([--disable-tt],
+				   [disable Tokyo Tyrant support]) )
+if test "$enable_tt" == "no"; then
+	use_tt="no"
 else
 	AC_CHECK_HEADERS(tcrdb.h,,
 		AC_MSG_ERROR([Can't find tokyo tyrant header]))
 	AC_CHECK_LIB(tokyotyrant,tcrdbget,,
 		AC_MSG_ERROR([Can't find tokyotyrant library]))
 fi
-AC_MSG_RESULT($enable_tcrdb)
-AM_CONDITIONAL(USE_TCRDB, test "$use_tcrdb" = "yes")
+AC_MSG_RESULT($enable_tt)
+AM_CONDITIONAL(USE_TT, test "$use_tt" = "yes")
 
 
 ####
@@ -78,7 +78,7 @@ AM_CONDITIONAL(USE_TCRDB, test "$use_tcrdb" = "yes")
 ##
 AC_ARG_WITH([libmemcached],
 	AS_HELP_STRING([--with-libmemcached@<:@=DIR@:>@],
-				   [libmemcached]),
+				   [the install directory of libmemcached]),
 	[libmemcached_path="$withval"], [])
 if test "$libmemcached_path" != ""; then
 	CXXFLAGS="$CXXFLAGS -I$libmemcached_path/include"
