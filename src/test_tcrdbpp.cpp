@@ -14,7 +14,7 @@ int main(void)
 	libkv::tcrdb kv;
 
 	ret = kv.open("127.0.0.1", 1978);
-	check(ret, "failed to open 127.0.0.1:1978");
+	check(ret, "failed to open 127.0.0.1:1978: %s", kv.errmsg());
 
 	ret = kv.put("k1", "v1");
 	check(ret, "failed to put k1");

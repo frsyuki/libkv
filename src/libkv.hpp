@@ -98,6 +98,8 @@ public:
 	bool mget(mget_data* mx,
 			StringForwardIterator begin, StringForwardIterator end);
 
+	const char* errmsg();
+
 #ifdef MSGPACK_OBJECT_HPP__
 	template <typename T>
 	bool put_obj(

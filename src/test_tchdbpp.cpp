@@ -14,7 +14,7 @@ int main(void)
 	libkv::tchdb kv;
 
 	ret = kv.open("test_tchdb.tch", HDBOWRITER|HDBOCREAT);
-	check(ret, "failed to create test_tchdb.tch");
+	check(ret, "failed to create test_tchdb.tch: %s", kv.errmsg());
 
 	ret = kv.put("k1", "v1");
 	check(ret, "failed to put k1");

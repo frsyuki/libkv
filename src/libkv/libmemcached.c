@@ -24,44 +24,49 @@
 #include "libkv/libmemcached.h"
 #include <libmemcached/memcached.h>
 
-static void* kv_get(memcached_st* c,
+typedef struct kv_data {
+	memcached_st* st;
+	memcached_return err;
+} kv_data;
+
+static void* kv_get(kv_data* c,
 		const void* key, size_t keylen,
 		size_t* result_vallen)
 {
 	uint32_t flags;
-	memcached_return error;
-	return memcached_get(c, key, keylen, result_vallen, &flags, &error);
+	return memcached_get(c->st, key, keylen, result_vallen, &flags, &c->err);
 }
 
-static bool kv_put(memcached_st* c,
+static bool kv_put(kv_data* c,
 		const void* key, size_t keylen,
 		const void* val, size_t vallen)
 {
-	return memcached_set(c, key, keylen, val, vallen, 0, 0)
+	return (c->err = memcached_set(c->st, key, keylen, val, vallen, 0, 0))
 		== MEMCACHED_SUCCESS;
 }
 
-static bool kv_del(memcached_st* c,
+static bool kv_del(kv_data* c,
 		const void* key, size_t keylen)
 {
-	return memcached_delete(c, key, keylen, 0)
+	return (c->err = memcached_delete(c->st, key, keylen, 0))
 		== MEMCACHED_SUCCESS;
 }
 
-static bool kv_close(memcached_st* c)
+static bool kv_close(kv_data* c)
 {
-	memcached_free(c);
+	memcached_free(c->st);
+	free(c);
 	return true;
 }
 
-static const char* kv_errmsg(memcached_st* c)
+static const char* kv_errmsg(kv_data* c)
 {
-	return "unknown error";  /* FIXME */
+	return memcached_strerror(c->st, c->err);
 }
 
 
 typedef struct kv_mget_data {
-	memcached_st* c;
+	kv_data* c;
 	char* lastbuf;
 } kv_mget_data;
 
@@ -70,14 +75,13 @@ static const void* kv_mget_next(kv_mget_data* m,
 		size_t* result_vallen)
 {
 	uint32_t flags;
-	memcached_return error;
 	if(m->lastbuf != NULL) {
 		free(m->lastbuf);
 		m->lastbuf = NULL;
 	}
-	m->lastbuf = memcached_fetch(m->c, keybuf, keybuflen,
-			result_vallen, &flags, &error);
-	if(error != MEMCACHED_SUCCESS) {
+	m->lastbuf = memcached_fetch(m->c->st, keybuf, keybuflen,
+			result_vallen, &flags, &m->c->err);
+	if(m->c->err != MEMCACHED_SUCCESS) {
 		return NULL;
 	}
 	return m->lastbuf;
@@ -91,14 +95,14 @@ static void kv_mget_free(kv_mget_data* m)
 	free(m);
 }
 
-static bool kv_mget(memcached_st* c, libkv_mget_data* mx,
+static bool kv_mget(kv_data* c, libkv_mget_data* mx,
 		char** keys, size_t* keylens, size_t num)
 {
 	kv_mget_data* m = malloc(sizeof(kv_mget_data));
 	if(m == NULL) {
 		return NULL;
 	}
-	if(memcached_mget(c, keys, keylens, num)
+	if(memcached_mget(c->st, keys, keylens, num)
 			!= MEMCACHED_SUCCESS) {
 		free(m);
 		return false;
@@ -114,51 +118,63 @@ static bool kv_mget(memcached_st* c, libkv_mget_data* mx,
 
 bool libkv_libmemcached_init(libkv_t* x)
 {
-	memcached_st* c = memcached_create(NULL);
-	if(!c) {
+	kv_data* kv = malloc(sizeof(kv_data));
+	if(!kv) {
 		return false;
 	}
+
+	memcached_st* st = memcached_create(NULL);
+	if(!st) {
+		free(kv);
+		return false;
+	}
+	kv->st = st;
+	kv->err = MEMCACHED_SUCCESS;
+
 	x->kv_get    = (void*)&kv_get;
 	x->kv_put    = (void*)&kv_put;
 	x->kv_del    = (void*)&kv_del;
 	x->kv_mget   = (void*)&kv_mget;
 	x->kv_close  = (void*)&kv_close;
 	x->kv_errmsg = (void*)&kv_errmsg;
-	x->data = (void*)c;
+	x->data = (void*)kv;
 	return true;
 }
 
 bool libkv_libmemcached_add(libkv_t* x,
 		const char* hostname, unsigned int port)
 {
-	return memcached_server_add(x->data, hostname, port)
+	kv_data* c = x->data;
+	return (c->err = memcached_server_add(c->st, hostname, port))
 		== MEMCACHED_SUCCESS;
 }
 
 bool libkv_libmemcached_add_udp(libkv_t* x,
 		const char* hostname, unsigned int port)
 {
-	return memcached_server_add_udp(x->data, hostname, port)
+	kv_data* c = x->data;
+	return (c->err = memcached_server_add_udp(c->st, hostname, port))
 		== MEMCACHED_SUCCESS;
 }
 
 bool libkv_libmemcached_add_unix_socket(libkv_t* x,
 		const char* path)
 {
-	return memcached_server_add_unix_socket(x->data, path)
+	kv_data* c = x->data;
+	return (c->err = memcached_server_add_unix_socket(c->st, path))
 		== MEMCACHED_SUCCESS;
 }
 
 bool libkv_libmemcached_add_list(libkv_t* x,
 		const char* server_strings)
 {
-	memcached_return ret;
+	kv_data* c = x->data;
 	memcached_server_st* list = memcached_servers_parse(server_strings);
 	if(list == NULL) {
 		return false;
 	}
-	ret = memcached_server_push(x->data, list);
+	c->err = memcached_server_push(c->st, list);
 	memcached_server_list_free(list);
-	return ret == MEMCACHED_SUCCESS;
+	return c->err == MEMCACHED_SUCCESS;
 }
 
