@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef LIBKV_MSGPACK
 #include <msgpack.hpp>
