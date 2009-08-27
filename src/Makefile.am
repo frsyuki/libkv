@@ -49,7 +49,7 @@ endif
 
 
 check_PROGRAMS += test_msgpack
-test_msgpack_SOURCES = test_msgpack.c
+test_msgpack_SOURCES = test_msgpack.cpp
 test_msgpack_LDADD  = -ltokyocabinet -lmsgpack -L. -lkvpp
 
 
