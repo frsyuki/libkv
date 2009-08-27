@@ -54,6 +54,11 @@ static bool kv_close(memcached_st* c)
 	return true;
 }
 
+static const char* kv_errmsg(memcached_st* c)
+{
+	return "unknown error";  /* FIXME */
+}
+
 
 typedef struct kv_mget_data {
 	memcached_st* c;
@@ -118,7 +123,8 @@ bool libkv_libmemcached_init(libkv_t* x)
 	x->kv_del    = (void*)&kv_del;
 	x->kv_mget   = (void*)&kv_mget;
 	x->kv_close  = (void*)&kv_close;
-	x->data      = (void*)c;
+	x->kv_errmsg = (void*)&kv_errmsg;
+	x->data = (void*)c;
 	return true;
 }
 

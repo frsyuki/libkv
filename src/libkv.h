@@ -61,6 +61,8 @@ typedef struct libkv_t {
 
 	bool (*kv_close)(void*);
 
+	const char* (*kv_errmsg)(void*);
+
 	void* data;
 } libkv_t;
 
@@ -112,6 +114,11 @@ static inline void libkv_mget_free(libkv_mget_data* mx)
 static inline bool libkv_close(libkv_t* mx)
 {
 	return mx->kv_close(mx->data);
+}
+
+static inline const char* libkv_errmsg(libkv_t* mx)
+{
+	return mx->kv_errmsg(mx->data);
 }
 
 

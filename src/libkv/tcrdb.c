@@ -55,6 +55,11 @@ static bool kv_close(TCRDB* c)
 	return r;
 }
 
+static const char* kv_errmsg(TCRDB* c)
+{
+	return tcrdberrmsg(tcrdbecode(c));
+}
+
 
 static const void* kv_mget_next(TCMAP* m,
 		void* keybuf, size_t* keybuflen,
@@ -113,6 +118,7 @@ bool libkv_tcrdb_init(libkv_t* x)
 	x->kv_del   = (void*)&kv_del;
 	x->kv_mget  = (void*)&kv_mget;
 	x->kv_close = (void*)&kv_close;
+	x->kv_errmsg = (void*)&kv_errmsg;
 	x->data = (void*)c;
 	return true;
 }

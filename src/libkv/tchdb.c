@@ -55,6 +55,11 @@ static bool kv_close(TCHDB* c)
 	return r;
 }
 
+static const char* kv_errmsg(TCHDB* c)
+{
+	return tchdberrmsg(tchdbecode(c));
+}
+
 
 static const void* kv_mget_next(TCMAP* m,
 		void* keybuf, size_t* keybuflen,
@@ -113,12 +118,13 @@ bool libkv_tchdb_init(libkv_t* x)
 		tchdbdel(c);
 		return false;
 	}
-	x->kv_get   = (void*)&kv_get;
-	x->kv_put   = (void*)&kv_put;
-	x->kv_del   = (void*)&kv_del;
-	x->kv_mget  = (void*)&kv_mget;
-	x->kv_close = (void*)&kv_close;
-	x->data     = (void*)c;
+	x->kv_get    = (void*)&kv_get;
+	x->kv_put    = (void*)&kv_put;
+	x->kv_del    = (void*)&kv_del;
+	x->kv_mget   = (void*)&kv_mget;
+	x->kv_close  = (void*)&kv_close;
+	x->kv_errmsg = (void*)&kv_errmsg;
+	x->data = (void*)c;
 	return true;
 }
 
