@@ -35,9 +35,13 @@ Configure and install in the usual way:
 Include libkv/IMPL.h header and link libkv library.
 IMPL is one of libmemcached, tcadb, tcbdb, tchdb or tcrdb.
 
+See src/test_libmemcached.c or src/test_tchdb.c for example.
+
 ### C++ API
 Include libkv/IMPL.hpp header and link libkvpp library.
 IMPL is one of libmemcached, tcadb, tcbdb, tchdb or tcrdb.
+
+See src/test_tcrdbpp.cpp or src/test_msgpack.cpp for example.
 
 To use put_obj and get_obj APIs, include msgpack.hpp header before including
 libkv header or add -DLIBKV_MSGPACK flag to CXXFLAGS.
