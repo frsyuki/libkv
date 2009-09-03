@@ -46,6 +46,8 @@ bool libkv_libmemcached_add_unix_socket(libkv_t*,
 bool libkv_libmemcached_add_list(libkv_t*,
 		const char* server_strings);
 
+bool libkv_libmemcached_set_binary_protocol(libkv_t*);
+
 
 #ifdef __cplusplus
 }

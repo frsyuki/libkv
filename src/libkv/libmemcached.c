@@ -162,3 +162,8 @@ bool libkv_libmemcached_add_list(libkv_t* x,
 	return ret == MEMCACHED_SUCCESS;
 }
 
+bool libkv_libmemcached_set_binary_protocol(libkv_t* x)
+{
+	memcached_behavior_set(x->data, MEMCACHED_BEHAVIOR_BINARY_PROTOCOL, 1);
+}
+
