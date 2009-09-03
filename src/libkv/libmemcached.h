@@ -32,6 +32,8 @@ extern "C" {
 #endif
 
 
+memcached_st* libkv_get_libmemcached(libkv_t*);
+
 bool libkv_libmemcached_init(libkv_t*);
 
 bool libkv_libmemcached_add(libkv_t*,

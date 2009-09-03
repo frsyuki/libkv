@@ -116,6 +116,12 @@ static bool kv_mget(kv_data* c, libkv_mget_data* mx,
 }
 
 
+memcached_st* libkv_get_libmemcached(libkv_t* x)
+{
+	kv_data* c = x->data;
+	return c->st;
+}
+
 bool libkv_libmemcached_init(libkv_t* x)
 {
 	kv_data* kv = malloc(sizeof(kv_data));
@@ -180,6 +186,7 @@ bool libkv_libmemcached_add_list(libkv_t* x,
 
 bool libkv_libmemcached_set_binary_protocol(libkv_t* x)
 {
-	memcached_behavior_set(x->data, MEMCACHED_BEHAVIOR_BINARY_PROTOCOL, 1);
+	return memcached_behavior_set(x->data, MEMCACHED_BEHAVIOR_BINARY_PROTOCOL, 1)
+		== MEMCACHED_SUCCESS;
 }
 

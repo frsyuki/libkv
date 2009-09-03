@@ -47,7 +47,7 @@ public:
 };
 
 
-}  // namespace base
+}  // namespace libkv
 
 #endif /* libkv/tcrdb.hpp */
 

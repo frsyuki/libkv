@@ -63,10 +63,21 @@ public:
 		return libkv_libmemcached_add_list(
 				this, server_strings);
 	}
+
+	bool set_binary_protocol()
+	{
+		return libkv_libmemcached_set_binary_protocol(
+				this);
+	}
+
+	memcached_st* get_libmemcached()
+	{
+		return libkv_get_libmemcached(this);
+	}
 };
 
 
-}  // namespace base
+}  // namespace libkv
 
 #endif /* libkv/libmemcached.hpp */
 
