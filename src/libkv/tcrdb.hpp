@@ -44,6 +44,11 @@ public:
 	{
 		return libkv_tcrdb_open(this, host, port);
 	}
+
+	TCRDB* get_tcrdb()
+	{
+		return libkv_get_tcrdb(this);
+	}
 };
 
 

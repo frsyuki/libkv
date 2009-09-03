@@ -108,6 +108,12 @@ static bool kv_mget(TCADB* c, libkv_mget_data* mx,
 }
 
 
+TCADB* libkv_get_tcadb(libkv_t* x)
+{
+	TCADB* c = x->data;
+	return c;
+}
+
 bool libkv_tcadb_init(libkv_t* x)
 {
 	TCADB* c = tcadbnew();

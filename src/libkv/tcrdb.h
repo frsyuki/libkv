@@ -32,6 +32,8 @@ extern "C" {
 #endif
 
 
+TCRDB* libkv_get_tcrdb(libkv_t*);
+
 bool libkv_tcrdb_init(libkv_t*);
 
 bool libkv_tcrdb_open(libkv_t*, const char* host, int port);

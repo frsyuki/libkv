@@ -31,6 +31,9 @@
 extern "C" {
 #endif
 
+
+TCBDB* libkv_get_tcbdb(libkv_t*);
+
 bool libkv_tcbdb_init(libkv_t*);
 
 bool libkv_tcbdb_open(libkv_t*, const char* path, int mode);

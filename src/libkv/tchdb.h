@@ -31,6 +31,9 @@
 extern "C" {
 #endif
 
+
+TCHDB* libkv_get_tchdb(libkv_t*);
+
 bool libkv_tchdb_init(libkv_t*);
 
 bool libkv_tchdb_open(libkv_t*, const char* path, int mode);

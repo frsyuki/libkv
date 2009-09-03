@@ -44,6 +44,11 @@ public:
 	{
 		return libkv_tchdb_open(this, path, mode);
 	}
+
+	TCHDB* get_tchdb()
+	{
+		return libkv_get_tchdb(this);
+	}
 };
 
 

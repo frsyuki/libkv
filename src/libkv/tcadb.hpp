@@ -44,6 +44,11 @@ public:
 	{
 		return libkv_tcadb_open(this, name);
 	}
+
+	TCADB* get_tcadb()
+	{
+		return libkv_get_tcadb(this);
+	}
 };
 
 

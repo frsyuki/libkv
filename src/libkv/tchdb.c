@@ -108,6 +108,12 @@ static bool kv_mget(TCHDB* c, libkv_mget_data* mx,
 }
 
 
+TCHDB* libkv_get_tchdb(libkv_t* x)
+{
+	TCHDB* c = x->data;
+	return c;
+}
+
 bool libkv_tchdb_init(libkv_t* x)
 {
 	TCHDB* c = tchdbnew();

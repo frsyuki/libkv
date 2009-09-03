@@ -44,6 +44,11 @@ public:
 	{
 		return libkv_tcbdb_open(this, path, mode);
 	}
+
+	TCBDB* get_tcbdb()
+	{
+		return libkv_get_tcbdb(this);
+	}
 };
 
 
