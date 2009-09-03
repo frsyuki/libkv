@@ -16,7 +16,7 @@ int main(void)
 	check(ret, "init failed");
 
 	ret = libkv_libmemcached_add(&kv, "127.0.0.1", 11211);
-	check(ret, "failed to add 127.0.0.1:11211");
+	check(ret, "failed to add 127.0.0.1:11211: %s", libkv_errmsg(&kv));
 
 	ret = libkv_put(&kv, "k1", 2, "v1", 2);
 	check(ret, "failed to put k1");

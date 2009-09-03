@@ -16,7 +16,7 @@ int main(void)
 	check(ret, "init failed");
 
 	ret = libkv_tcrdb_open(&kv, "127.0.0.1", 1978);
-	check(ret, "failed to open 127.0.0.1:1978");
+	check(ret, "failed to open 127.0.0.1:1978: %s", libkv_errmsg(&kv));
 
 	ret = libkv_put(&kv, "k1", 2, "v1", 2);
 	check(ret, "failed to put k1");

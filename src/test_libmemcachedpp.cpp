@@ -14,7 +14,7 @@ int main(void)
 	libkv::libmemcached kv;
 
 	ret = kv.add("127.0.0.1", 11211);
-	check(ret, "failed to add 127.0.0.1:11211");
+	check(ret, "failed to add 127.0.0.1:11211: %s", kv.errmsg());
 
 	ret = kv.put("k1", "v1");
 	check(ret, "failed to put k1");

@@ -97,6 +97,11 @@ bool base::mget(mget_data* mx,
 	return (*kv_mget)(this->data, mx, keys, keylens, num);
 }
 
+const char* base::errmsg()
+{
+	return libkv_errmsg(this);
+}
+
 
 mget_data::mget_data()
 {
